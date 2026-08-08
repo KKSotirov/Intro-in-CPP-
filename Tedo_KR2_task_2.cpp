@@ -70,3 +70,26 @@ char *returnUnique(const char *str)
     delete[] helperContainer;
     return newStr;
 }
+
+void printStr(const char *str)
+{
+    unsigned len = strlen(str);
+    for (size_t i = 0; i < len; i++)
+    {
+        std::cout << str[i];
+    }
+
+    std::cout << std::endl;
+}
+
+int main()
+{
+    const char *testStr = "AKaKKyyassAsSa";
+    char *amenStr = nullptr;
+    strcpy(amenStr, testStr);
+    char *theChosenOne = returnUnique(amenStr);
+    std::cout << "The chosen one is :   " << std::endl;
+    printStr(theChosenOne);
+    delete[] theChosenOne;
+    return 0;
+}
