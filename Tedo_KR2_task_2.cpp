@@ -14,6 +14,7 @@ unsigned strlen(const char *str)
 void strcpy(char *&dest, const char *src)
 {
     delete[] dest;
+    dest = new char[strlen(src) + 1];
     unsigned pos = 0;
     while (*src)
     {
@@ -58,7 +59,7 @@ char *returnUnique(const char *str)
     {
         if (array[i] == 1)
         {
-            *helperContainer = array[i];
+            *helperContainer = static_cast<char>(array[i]);
             helperContainer++;
             newLen++;
         }
