@@ -28,6 +28,11 @@ void strcpy(char *&dest, const char *src)
 
 void myStrCopy(char *&dest, const char *src, const unsigned len)
 {
+    for (size_t i = 0; i < len; i++)
+    {
+        dest[i] = src[i];
+    }
+    dest[len] = '\0';
 }
 
 int getASCII(const char ch)
@@ -60,4 +65,8 @@ char *returnUnique(const char *str)
     }
 
     helperContainer -= newLen;
+    char *newStr = new char[newLen + 1];
+    myStrCopy(newStr, helperContainer, newLen);
+    delete[] helperContainer;
+    return newStr;
 }
