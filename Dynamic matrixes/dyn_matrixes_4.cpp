@@ -37,3 +37,35 @@ void printMatrix(const int *const *matrix, unsigned n)
         std::cout << std::endl;
     }
 }
+
+int main()
+{
+    unsigned n = 3;
+
+    // Създаваме тестова матрица 3x3
+    int **matrix = new int *[n];
+    int counter = 1;
+    for (size_t i = 0; i < n; i++)
+    {
+        matrix[i] = new int[n];
+        for (size_t j = 0; j < n; j++)
+        {
+            matrix[i][j] = counter++;
+        }
+    }
+
+    std::cout << "Original Matrix:" << std::endl;
+    printMatrix(matrix, n);
+
+    // Завъртаме на 90 градуса
+    int **rotated = rotateMatrix90(matrix, n);
+
+    std::cout << "\nRotated Matrix (90 degrees clockwise):" << std::endl;
+    printMatrix(rotated, n);
+
+    // Почистване на паметта
+    freeMatrix(matrix, n);
+    freeMatrix(rotated, n);
+
+    return 0;
+}
