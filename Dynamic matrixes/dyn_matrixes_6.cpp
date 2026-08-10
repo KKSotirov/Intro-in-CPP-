@@ -1,6 +1,6 @@
 #include <iostream>
 
-// Filling a matrix spyrally
+// Filling a matrix spirally
 
 int **returnSpiralMatrix(const unsigned len)
 {
