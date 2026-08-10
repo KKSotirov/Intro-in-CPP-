@@ -4,7 +4,7 @@
 
 int **returnSpiralMatrix(const unsigned len)
 {
-    // Lets first innitMatrix
+    // Lets first innit Matrix
     int **spiralMatrix = new int *[len];
     for (size_t i = 0; i < len; i++)
     {
@@ -17,8 +17,8 @@ int **returnSpiralMatrix(const unsigned len)
     // now we have a len x len matrix
     int i = 0;
     int j = 0;
-    unsigned currNumber = 1;
-    unsigned currSpiral = 0;
+    int currNumber = 1;
+    int currSpiral = 0;
     // FIRST SPIRAL
     while (currNumber <= len * len)
     {
@@ -42,7 +42,7 @@ int **returnSpiralMatrix(const unsigned len)
         }
         i--;
         j--;
-        while (j > 0 - currSpiral)
+        while (j >= currSpiral)
         {
             spiralMatrix[i][j] = currNumber;
             j--;
@@ -51,7 +51,7 @@ int **returnSpiralMatrix(const unsigned len)
         }
         i--;
         j++;
-        while (i > 1 - currSpiral)
+        while (i > currSpiral)
         {
             spiralMatrix[i][j] = currNumber;
             i--;
@@ -62,4 +62,34 @@ int **returnSpiralMatrix(const unsigned len)
     }
 
     return spiralMatrix;
+}
+
+void freeMatrix(int **matrix, const unsigned len)
+{
+    for (size_t i = 0; i < len; i++)
+    {
+        delete[] matrix[i];
+    }
+    delete[] matrix;
+}
+
+void printMatrix(int **matrix, const unsigned len)
+{
+    for (size_t i = 0; i < len; i++)
+    {
+        for (size_t j = 0; j < len; j++)
+        {
+            std::cout << matrix[i][j] << " ";
+        }
+        std::cout << std::endl;
+    }
+}
+int main()
+{
+    unsigned len;
+    std::cout << "Please enter size of square matrix: " << std::endl;
+    std::cin >> len;
+    int **spiralMatrix = returnSpiralMatrix(len);
+    printMatrix(spiralMatrix, len);
+    freeMatrix(spiralMatrix, len);
 }
