@@ -33,7 +33,6 @@ int **createReverseSpiral(const unsigned len)
         // lets dismantle each spiral into 4 parts:      1.left, 2.up, 3.right, 4.down
         while (j >= currSpiral)
         {
-            std::cout << "We are currently at indexes :  [" << i << "][" << j << "] !!" << std::endl;
             reversedSpiral[i][j] = currNumber;
             currNumber++;
             j--; // Left ~~> 1/4 Spiral
@@ -42,25 +41,22 @@ int **createReverseSpiral(const unsigned len)
         i--;
         while (i >= currSpiral)
         {
-            std::cout << "We are currently at indexes :  [" << i << "][" << j << "] !!" << std::endl;
             reversedSpiral[i][j] = currNumber;
             currNumber++;
-            i--; // Up ~~> 2/4
+            i--; // Up ~~> 2/4 Spiral
         }
         i++;
         j++;
         while (j < len - currSpiral)
         {
-            std::cout << "We are currently at indexes :  [" << i << "][" << j << "] !!" << std::endl;
             reversedSpiral[i][j] = currNumber;
             currNumber++;
-            j++; // Right ~~> 3/4
+            j++; // Right ~~> 3/4 Spiral
         }
         j--;
         i++;
         while (i < len - currSpiral - 1)
         {
-            std::cout << "We are currently at indexes :  [" << i << "][" << j << "] !!" << std::endl;
             reversedSpiral[i][j] = currNumber;
             currNumber++;
             i++; // Down ~~> 4/4 Spiral      ==> Successfully completed a reverse spiral!

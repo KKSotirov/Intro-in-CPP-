@@ -2,7 +2,6 @@
 
 void fillMatrix(int **matrix, const unsigned len)
 {
-    // тук по копие на матрицата ли работим? Ако тук въведем стойност за всяко поле на матрицата, то то ще се запизи ли извън scope-a на функцията?
     for (size_t i = 0; i < len; i++)
     {
         matrix[i] = new int[len];
@@ -11,7 +10,6 @@ void fillMatrix(int **matrix, const unsigned len)
             std::cout << "Please enter value for element on row: " << i << " and col: " << j << std::endl;
             std::cin >> matrix[i][j];
         }
-        //        matrix[i][len] = '\0';  // но това не е вярно, тъй като работим с int матрици... трябва ли да се грижа за полседният елемент по някакъв специален начин или Int матриците не го изискват?
     }
 }
 

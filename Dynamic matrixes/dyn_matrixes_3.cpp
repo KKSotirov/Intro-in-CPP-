@@ -44,7 +44,6 @@ int main()
     std::cout << "Please enter number of cols: " << std::endl;
     std::cin >> cols;
 
-    // 1. Заделяме памет и четем оригиналната матрица от конзолата
     int **matrix = new int *[rows];
     std::cout << "Enter matrix elements:" << std::endl;
     for (size_t i = 0; i < rows; i++)
@@ -56,13 +55,10 @@ int main()
         }
     }
 
-    // 2. Транспонираме, като подаваме оригиналната матрица
     int **transposedMatrix = transposeMatrix(matrix, rows, cols);
-
     std::cout << "Transposed Matrix:" << std::endl;
     printMatrix(transposedMatrix, cols, rows);
 
-    // 3. Почистваме паметта и на двете матрици
     freeMatrix(matrix, rows);
     freeMatrix(transposedMatrix, cols);
 
