@@ -1,7 +1,5 @@
 #include <iostream>
 
-#include <iostream>
-
 int **rotateMatrix90(const int *const *matrix, unsigned n)
 {
     int **rotatedMatrix = new int *[n];
@@ -42,7 +40,7 @@ int main()
 {
     unsigned n = 3;
 
-    // Създаваме тестова матрица 3x3
+    // Creating test matrix 3x3
     int **matrix = new int *[n];
     int counter = 1;
     for (size_t i = 0; i < n; i++)
@@ -57,13 +55,11 @@ int main()
     std::cout << "Original Matrix:" << std::endl;
     printMatrix(matrix, n);
 
-    // Завъртаме на 90 градуса
     int **rotated = rotateMatrix90(matrix, n);
 
     std::cout << "\nRotated Matrix (90 degrees clockwise):" << std::endl;
     printMatrix(rotated, n);
 
-    // Почистване на паметта
     freeMatrix(matrix, n);
     freeMatrix(rotated, n);
 

@@ -32,8 +32,6 @@ int countConsecutive(const char *str)
     while (*str == seekedSymbol)
     {
         count++;
-        std::cout << "WOW, we found the symbol : " << seekedSymbol << "  for the " << count << "-th time!" << std::endl;
-
         str++;
     }
     return count;
@@ -76,7 +74,6 @@ char *compressString(const char *str)
         helperContainer++;
         newLen++;
         int countConsecutiv = countConsecutive(str);
-        std::cout << "This is the fucking count Consecutiv value :   " << countConsecutiv << std::endl;
         *helperContainer = intToChar(countConsecutiv);
         helperContainer++;
         newLen++;
