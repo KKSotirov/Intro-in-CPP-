@@ -41,6 +41,71 @@ void rotate90DegreesRight(int **matrix, size_t size)
     }
 }
 
+void rotate90DegreesLeft(int **matrix, size_t size)
+{
+    for (size_t i = 0; i < size; i++)
+    {
+        for (size_t j = 0; j < size; j++)
+        {
+            matrix[i][j] = matrix[j][size - 1 - i];
+        }
+    }
+}
+void matrixCpy(int **dest, int **src, unsigned size)
+{
+    for (size_t i = 0; i < size; i++)
+    {
+        for (size_t j = 0; j < size; j++)
+        {
+            dest[i][j] = src[i][j];
+        }
+    }
+}
+
+void freeMatrix(int **matrix, const unsigned len)
+{
+    for (size_t i = 0; i < len; i++)
+    {
+        delete[] matrix[i];
+    }
+    delete[] matrix;
+}
+
+void transformQ4(int **matrix, size_t size)
+{
+    int **helpercontainer = new int *[size];
+    for (size_t i = 0; i < size; i++)
+    {
+        helpercontainer[i] = new int[size];
+    }
+
+    int dRow[] = {-1, 1, 0, 0};
+    int dCol[] = {0, 0, -1, 1};
+
+    for (size_t i = 0; i < size; i++)
+    {
+        for (size_t j = 0; j < size; j++)
+        {
+            int neighborSum = 0;
+            for (size_t dir = 0; dir < 4; dir++)
+            {
+                int nextRow = (int)i + dRow[dir];
+                int nextCol = (int)j + dCol[dir];
+
+                // Валидация дали съседът е вътре в границите на Q4 (k x k)
+                if (nextRow >= 0 && nextRow < (int)size && nextCol >= 0 && nextCol < (int)size)
+                {
+                    neighborSum += matrix[nextRow][nextCol]; // Четем от ОРИГИНАЛА
+                }
+            }
+
+            helpercontainer[i][j] = neighborSum;
+        }
+    }
+    matrixCpy(matrix, helpercontainer, size);
+    freeMatrix(helpercontainer, size);
+}
+
 int **processAndReduceMatrix(const int *const *matrix, size_t size, size_t &outSize)
 {
     size_t sizeSubMatrix = size / 2;
@@ -76,4 +141,7 @@ int **processAndReduceMatrix(const int *const *matrix, size_t size, size_t &outS
     // Q2 ~~> Rotate 90 degrees right:
     rotate90DegreesRight(subMatrix2, sizeSubMatrix);
     // Q3 ~~> Rotate 90 degrees left:
+    rotate90DegreesLeft(subMatrix3, sizeSubMatrix);
+    // Q4 ~~> Summing neighboring elements
+    transformQ4(subMatrix4, size);
 }
