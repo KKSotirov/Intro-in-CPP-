@@ -1,57 +1,18 @@
 #include <iostream>
+#include <utility>
 
-void initMatrix(int **matrix, const size_t size)
+void freeMatrix(int **matrix, const size_t len)
 {
-    unsigned currNumber = 1;
-    for (size_t i = 0; i < size; i++)
+    if (!matrix)
+        return;
+    for (size_t i = 0; i < len; i++)
     {
-        matrix[i] = new int[size];
-        for (size_t j = 0; j < size; j++)
-        {
-            matrix[i][j] = currNumber;
-            currNumber++;
-        }
+        delete[] matrix[i];
     }
-    // filling the og matrix
+    delete[] matrix;
 }
 
-void initSubMatrix(const int *const *matrix, int **subMatrix, const size_t sizeSubMatrix, int startPosRow, int startPosCol)
-{
-
-    for (size_t i = 0; i < sizeSubMatrix; i++)
-    {
-        subMatrix[startPosRow] = new int[sizeSubMatrix];
-        for (size_t j = 0; j < sizeSubMatrix; j++)
-        {
-            subMatrix[i][j] = matrix[i + startPosRow][j + startPosCol];
-            // startPosRow++;
-            // startPosCol++;
-        }
-    }
-}
-
-void rotate90DegreesRight(int **matrix, size_t size)
-{
-    for (size_t i = 0; i < size; i++)
-    {
-        for (size_t j = 0; j < size; j++)
-        {
-            matrix[i][j] = matrix[size - 1 - j][i];
-        }
-    }
-}
-
-void rotate90DegreesLeft(int **matrix, size_t size)
-{
-    for (size_t i = 0; i < size; i++)
-    {
-        for (size_t j = 0; j < size; j++)
-        {
-            matrix[i][j] = matrix[j][size - 1 - i];
-        }
-    }
-}
-void matrixCpy(int **dest, int **src, unsigned size)
+void matrixCpy(int **dest, int **src, size_t size)
 {
     for (size_t i = 0; i < size; i++)
     {
@@ -62,13 +23,70 @@ void matrixCpy(int **dest, int **src, unsigned size)
     }
 }
 
-void freeMatrix(int **matrix, const unsigned len)
+void initSubMatrix(const int *const *matrix, int **subMatrix, size_t sizeSubMatrix, size_t startPosRow, size_t startPosCol)
 {
-    for (size_t i = 0; i < len; i++)
+    for (size_t i = 0; i < sizeSubMatrix; i++)
     {
-        delete[] matrix[i];
+        subMatrix[i] = new int[sizeSubMatrix];
+        for (size_t j = 0; j < sizeSubMatrix; j++)
+        {
+            subMatrix[i][j] = matrix[i + startPosRow][j + startPosCol];
+        }
     }
-    delete[] matrix;
+}
+
+void transposeMatrix(int **matrix, size_t size)
+{
+    int **temp = new int *[size];
+    for (size_t i = 0; i < size; i++)
+    {
+        temp[i] = new int[size];
+    }
+
+    for (size_t i = 0; i < size; i++)
+    {
+        for (size_t j = 0; j < size; j++)
+        {
+            temp[i][j] = matrix[j][i];
+        }
+    }
+
+    matrixCpy(matrix, temp, size);
+    freeMatrix(temp, size);
+}
+
+void rotate90DegreesRight(int **matrix, size_t size)
+{
+    int **temp = new int *[size];
+    for (size_t i = 0; i < size; i++)
+        temp[i] = new int[size];
+
+    for (size_t i = 0; i < size; i++)
+    {
+        for (size_t j = 0; j < size; j++)
+        {
+            temp[i][j] = matrix[size - 1 - j][i];
+        }
+    }
+    matrixCpy(matrix, temp, size);
+    freeMatrix(temp, size);
+}
+
+void rotate90DegreesLeft(int **matrix, size_t size)
+{
+    int **temp = new int *[size];
+    for (size_t i = 0; i < size; i++)
+        temp[i] = new int[size];
+
+    for (size_t i = 0; i < size; i++)
+    {
+        for (size_t j = 0; j < size; j++)
+        {
+            temp[i][j] = matrix[j][size - 1 - i];
+        }
+    }
+    matrixCpy(matrix, temp, size);
+    freeMatrix(temp, size);
 }
 
 void transformQ4(int **matrix, size_t size)
@@ -92,13 +110,11 @@ void transformQ4(int **matrix, size_t size)
                 int nextRow = (int)i + dRow[dir];
                 int nextCol = (int)j + dCol[dir];
 
-                // Валидация дали съседът е вътре в границите на Q4 (k x k)
                 if (nextRow >= 0 && nextRow < (int)size && nextCol >= 0 && nextCol < (int)size)
                 {
-                    neighborSum += matrix[nextRow][nextCol]; // Четем от ОРИГИНАЛА
+                    neighborSum += matrix[nextRow][nextCol];
                 }
             }
-
             helpercontainer[i][j] = neighborSum;
         }
     }
@@ -108,40 +124,38 @@ void transformQ4(int **matrix, size_t size)
 
 int **processAndReduceMatrix(const int *const *matrix, size_t size, size_t &outSize)
 {
-    size_t sizeSubMatrix = size / 2;
-    size_t startRow = 0;
-    size_t startCol = 0;
-
-    int **subMatrix1 = new int *[sizeSubMatrix];
-    initSubMatrix(matrix, subMatrix1, sizeSubMatrix, startRow, startCol); // Q1
-    startCol += sizeSubMatrix;
-
-    int **subMatrix2 = new int *[sizeSubMatrix];
-    initSubMatrix(matrix, subMatrix2, sizeSubMatrix, startRow, startCol); // Q2
-    startCol -= sizeSubMatrix;
-    startRow += sizeSubMatrix;
-
-    int **subMatrix3 = new int *[sizeSubMatrix];
-    initSubMatrix(matrix, subMatrix3, sizeSubMatrix, startRow, startCol); // Q3
-    startCol += sizeSubMatrix;
-
-    int **subMatrix4 = new int *[sizeSubMatrix];
-    initSubMatrix(matrix, subMatrix4, sizeSubMatrix, startRow, startCol); // Q4
-    // Have successfully disassembled matrix into four quadrants
-
-    // Q1 ~~> Transpose
-    for (size_t i = 0; i < sizeSubMatrix; i++)
+    // Validating data
+    if (!matrix || size == 0 || size % 2 != 0)
     {
-        for (size_t j = 0; j < sizeSubMatrix; j++)
-        {
-            subMatrix1[i][j] = subMatrix1[j][i];
-        }
+        outSize = 0;
+        return nullptr;
     }
 
-    // Q2 ~~> Rotate 90 degrees right:
+    size_t sizeSubMatrix = size / 2;
+    outSize = sizeSubMatrix;
+
+    // Building our 4 quadrants
+    int **subMatrix1 = new int *[sizeSubMatrix];
+    initSubMatrix(matrix, subMatrix1, sizeSubMatrix, 0, 0);
+
+    int **subMatrix2 = new int *[sizeSubMatrix];
+    initSubMatrix(matrix, subMatrix2, sizeSubMatrix, 0, sizeSubMatrix);
+
+    int **subMatrix3 = new int *[sizeSubMatrix];
+    initSubMatrix(matrix, subMatrix3, sizeSubMatrix, sizeSubMatrix, 0);
+
+    int **subMatrix4 = new int *[sizeSubMatrix];
+    initSubMatrix(matrix, subMatrix4, sizeSubMatrix, sizeSubMatrix, sizeSubMatrix);
+
+    // Transforming the quadrants
+    transposeMatrix(subMatrix1, sizeSubMatrix);
     rotate90DegreesRight(subMatrix2, sizeSubMatrix);
-    // Q3 ~~> Rotate 90 degrees left:
     rotate90DegreesLeft(subMatrix3, sizeSubMatrix);
-    // Q4 ~~> Summing neighboring elements
-    transformQ4(subMatrix4, size);
+    transformQ4(subMatrix4, sizeSubMatrix);
+
+    // Freeing the memory
+    freeMatrix(subMatrix1, sizeSubMatrix);
+    freeMatrix(subMatrix2, sizeSubMatrix);
+    freeMatrix(subMatrix3, sizeSubMatrix);
+    freeMatrix(subMatrix4, sizeSubMatrix);
 }
