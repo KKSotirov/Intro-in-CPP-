@@ -30,6 +30,17 @@ void initSubMatrix(const int *const *matrix, int **subMatrix, const size_t sizeS
     }
 }
 
+void rotate90DegreesRight(int **matrix, size_t size)
+{
+    for (size_t i = 0; i < size; i++)
+    {
+        for (size_t j = 0; j < size; j++)
+        {
+            matrix[i][j] = matrix[size - 1 - j][i];
+        }
+    }
+}
+
 int **processAndReduceMatrix(const int *const *matrix, size_t size, size_t &outSize)
 {
     size_t sizeSubMatrix = size / 2;
@@ -52,4 +63,17 @@ int **processAndReduceMatrix(const int *const *matrix, size_t size, size_t &outS
     int **subMatrix4 = new int *[sizeSubMatrix];
     initSubMatrix(matrix, subMatrix4, sizeSubMatrix, startRow, startCol); // Q4
     // Have successfully disassembled matrix into four quadrants
+
+    // Q1 ~~> Transpose
+    for (size_t i = 0; i < sizeSubMatrix; i++)
+    {
+        for (size_t j = 0; j < sizeSubMatrix; j++)
+        {
+            subMatrix1[i][j] = subMatrix1[j][i];
+        }
+    }
+
+    // Q2 ~~> Rotate 90 degrees right:
+    rotate90DegreesRight(subMatrix2, sizeSubMatrix);
+    // Q3 ~~> Rotate 90 degrees left:
 }
