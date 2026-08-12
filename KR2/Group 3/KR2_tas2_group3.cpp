@@ -58,16 +58,15 @@ double calcAverageForRow(int **matrix, size_t row, const size_t size)
 
 double *avgEvenRows(int **matrix, const size_t size)
 {
-    double averageEvenRows[size / 2] = {0};
+    size_t count = (size + 1) / 2;
+    double *averageEvenRows = new double[count];
     int pos = 0;
     for (size_t i = 0; i < size; i++)
     {
-        for (size_t j = 0; j < size; j++)
+        if (i % 2 == 0)
         {
-            if (i % 2 == 0)
-            {
-                averageEvenRows[pos] = calcAverageForRow(matrix, i, size);
-            }
+            averageEvenRows[pos] = calcAverageForRow(matrix, i, size);
+            pos++;
         }
     }
     return averageEvenRows;
@@ -85,16 +84,21 @@ double calcAverageForCol(int **matrix, size_t col, const size_t size)
 
 double *avgUnevenCols(int **matrix, size_t size)
 {
-    double averageUnevenCols[size / 2] = {0};
-    int pos = 0;
-    for (size_t i = 0; i < size; i++)
+    size_t count = size / 2;
+    if (count == 0)
     {
-        for (size_t j = 0; j < size; j++)
+        return nullptr;
+    }
+
+    double *averageUnevenCols = new double[count];
+    size_t pos = 0;
+
+    for (size_t j = 0; j < size; j++)
+    {
+        if (j % 2 == 1)
         {
-            if (j % 2 == 1)
-            {
-                averageUnevenCols[pos] = calcAverageForCol(matrix, j, size);
-            }
+            averageUnevenCols[pos] = calcAverageForCol(matrix, j, size);
+            pos++;
         }
     }
     return averageUnevenCols;
@@ -116,7 +120,7 @@ void printStr(double *averages, const size_t size)
 {
     for (size_t i = 0; i < size; i++)
     {
-        std::cout << averages << " , ";
+        std::cout << averages[i] << " , ";
     }
     std::cout << std::endl;
 }
@@ -127,14 +131,23 @@ int main()
     std::cout << "Please enter size of matrix: " << std::endl;
     std::cin >> size;
 
+    size_t countEvenRows = (size + 1) / 2;
+    size_t countUnevenCols = size / 2;
+
     int **matrix = new int *[size];
     initMatrix(matrix, size);
     transposeMatrix(matrix, size);
+
     std::cout << "Even rows average:  " << std::endl;
-    printStr(avgEvenRows(matrix, size), size / 2);
+    double *evenRowAvg = avgEvenRows(matrix, size);
+    printStr(evenRowAvg, countEvenRows);
+    delete[] evenRowAvg;
     std::cout << std::endl;
-    std::cout << "Unven cols average:  " << std::endl;
-    printStr(avgUnevenCols(matrix, size), size / 2);
+
+    std::cout << "Uneven col average:  " << std::endl;
+    double *unevenColAvg = avgUnevenCols(matrix, size);
+    printStr(unevenColAvg, countUnevenCols);
+    delete[] unevenColAvg;
     std::cout << std::endl;
 
     freeMatrix(matrix, size);
