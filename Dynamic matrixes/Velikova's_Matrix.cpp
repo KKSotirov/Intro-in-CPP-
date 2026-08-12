@@ -1,11 +1,22 @@
 #include <iostream>
-#include <utility>
 
-void freeMatrix(int **matrix, const size_t len)
+void printMatrix(int *const *matrix, const size_t size)
+{
+    for (size_t i = 0; i < size; i++)
+    {
+        for (size_t j = 0; j < size; j++)
+        {
+            std::cout << matrix[i][j] << " ";
+        }
+        std::cout << std::endl;
+    }
+}
+
+void freeMatrix(int **matrix, const size_t size)
 {
     if (!matrix)
         return;
-    for (size_t i = 0; i < len; i++)
+    for (size_t i = 0; i < size; i++)
     {
         delete[] matrix[i];
     }
@@ -19,6 +30,18 @@ void matrixCpy(int **dest, int **src, size_t size)
         for (size_t j = 0; j < size; j++)
         {
             dest[i][j] = src[i][j];
+        }
+    }
+}
+
+void initMatrix(int **matrix, const size_t size)
+{
+    for (size_t i = 0; i < size; i++)
+    {
+        matrix[i] = new int[size];
+        for (size_t j = 0; j < size; j++)
+        {
+            std::cin >> matrix[i][j];
         }
     }
 }
@@ -122,6 +145,11 @@ void transformQ4(int **matrix, size_t size)
     freeMatrix(helpercontainer, size);
 }
 
+int calc2x2Determinant(const int elemFromQ1, const int elemFromQ2, const int elemFromQ3, const int elemFromQ4)
+{
+    return (elemFromQ1 * elemFromQ4 - elemFromQ2 * elemFromQ3);
+}
+
 int **processAndReduceMatrix(const int *const *matrix, size_t size, size_t &outSize)
 {
     // Validating data
@@ -153,9 +181,42 @@ int **processAndReduceMatrix(const int *const *matrix, size_t size, size_t &outS
     rotate90DegreesLeft(subMatrix3, sizeSubMatrix);
     transformQ4(subMatrix4, sizeSubMatrix);
 
+    // Building the chosen one
+    int **theChosenMatrix = new int *[sizeSubMatrix];
+    for (size_t i = 0; i < sizeSubMatrix; i++)
+    {
+        theChosenMatrix[i] = new int[sizeSubMatrix];
+        for (size_t j = 0; j < sizeSubMatrix; j++)
+        {
+            theChosenMatrix[i][j] = calc2x2Determinant(subMatrix1[i][j], subMatrix2[i][j], subMatrix3[i][j], subMatrix4[i][j]);
+        }
+    }
+
     // Freeing the memory
     freeMatrix(subMatrix1, sizeSubMatrix);
     freeMatrix(subMatrix2, sizeSubMatrix);
     freeMatrix(subMatrix3, sizeSubMatrix);
     freeMatrix(subMatrix4, sizeSubMatrix);
+
+    outSize = sizeSubMatrix;
+    return theChosenMatrix;
+}
+
+int main()
+{
+    size_t size;
+    std::cout << "Please enter size of main matrix: " << std::endl;
+    std::cin >> size;
+    int **matrix = new int *[size];
+    std::cout << "Please enter values for elements of matrix: " << std::endl;
+    initMatrix(matrix, size);
+
+    size_t theChosenMatrixSize;
+    int **theChosenMatrix = processAndReduceMatrix(matrix, size, theChosenMatrixSize);
+    std::cout << "Behold! The chosen matrix: " << std::endl;
+    printMatrix(theChosenMatrix, theChosenMatrixSize);
+
+    freeMatrix(matrix, size);
+    freeMatrix(theChosenMatrix, theChosenMatrixSize);
+    return 0;
 }
