@@ -25,18 +25,20 @@ bool isValidMatrix(const int *const *matrix, const unsigned size)
     return true;
 }
 
-unsigned moveLeft(int **matrix, unsigned startRow, unsigned StartCol, const unsigned size, const unsigned time)
+unsigned moveLeft(int **matrix, unsigned startRow, unsigned StartCol, const unsigned size, unsigned &time)
 {
     if (startRow >= 0)
     {
         if (matrix[startRow - 1][StartCol] == 1)
         {
             // We have found a hole!
+            matrix[startRow - 1][StartCol] = 0;
+            time++;
         }
     }
 }
 
-unsigned moveRight(int **matrix, unsigned startRow, unsigned StartCol, const unsigned size, const unsigned time)
+unsigned moveRight(int **matrix, unsigned startRow, unsigned StartCol, const unsigned size, unsigned &time)
 {
     for (size_t i = 0; i < size; i++)
     {
@@ -46,7 +48,7 @@ unsigned moveRight(int **matrix, unsigned startRow, unsigned StartCol, const uns
     }
 }
 
-unsigned moveUp(int **matrix, unsigned startRow, unsigned StartCol, const unsigned size, const unsigned time)
+unsigned moveUp(int **matrix, unsigned startRow, unsigned StartCol, const unsigned size, unsigned &time)
 {
     for (size_t i = 0; i < size; i++)
     {
@@ -56,7 +58,7 @@ unsigned moveUp(int **matrix, unsigned startRow, unsigned StartCol, const unsign
     }
 }
 
-unsigned moveDown(int **matrix, unsigned startRow, unsigned StartCol, const unsigned size, const unsigned time)
+unsigned moveDown(int **matrix, unsigned startRow, unsigned StartCol, const unsigned size, unsigned &time)
 {
     for (size_t i = 0; i < size; i++)
     {
@@ -66,7 +68,7 @@ unsigned moveDown(int **matrix, unsigned startRow, unsigned StartCol, const unsi
     }
 }
 
-unsigned theGreatFlood(int **matrix, unsigned startRow, unsigned startCol, const unsigned size, const unsigned timeElapsed)
+unsigned theGreatFlood(int **matrix, unsigned startRow, unsigned startCol, const unsigned size, unsigned &timeElapsed)
 {
     // Recursion
     // Water passes in all 4 directions   left, up, down, right
