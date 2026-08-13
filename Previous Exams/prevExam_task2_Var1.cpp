@@ -1,6 +1,6 @@
 #include <iostream>
 
-void initCharStr(char *&str, const unsigned len)
+void initCharStr(char *str, const unsigned len)
 {
     std::cout << "Please enter char string: " << std::endl;
     for (size_t i = 0; i < len; i++)
@@ -10,7 +10,7 @@ void initCharStr(char *&str, const unsigned len)
     str[len] = '\0';
 }
 
-void initIntStr(int *&str, const unsigned len)
+void initIntStr(int *str, const unsigned len)
 {
     std::cout << "Please enter int string: " << std::endl;
     for (size_t i = 0; i < len; i++)
