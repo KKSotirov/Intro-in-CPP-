@@ -12,6 +12,18 @@ void initMatrix(int **matrix, const unsigned size)
     }
 }
 
+void initTimeMatrix(int **timeMatrix, const unsigned size)
+{
+    for (size_t i = 0; i < size; i++)
+    {
+        timeMatrix[i] = new int[size];
+        for (size_t j = 0; j < size; j++)
+        {
+            timeMatrix[i][j] = -1;
+        }
+    }
+}
+
 bool isValidMatrix(const int *const *matrix, const unsigned size)
 {
     for (size_t i = 0; i < size; i++)
@@ -25,55 +37,26 @@ bool isValidMatrix(const int *const *matrix, const unsigned size)
     return true;
 }
 
-unsigned moveLeft(int **matrix, unsigned startRow, unsigned StartCol, const unsigned size, unsigned &time)
+void theGreatFlood(int **matrix, int **timeMatrix, int startRow, int startCol, const unsigned size, int time)
 {
-    if (startRow >= 0)
+    // Check if we inside matrix
+    if (startRow < 0 || startRow > size || startCol < 0 || startCol > size)
+        return;
+    // Check if matrix[i][j] = 0, if true, we have reached a wall, thus the water stops spreading
+    if (matrix[startRow][startCol] == 0)
+        return;
+
+    if (timeMatrix[startRow][startCol] != -1 && timeMatrix[startRow][startCol] <= time)
     {
-        if (matrix[startRow - 1][StartCol] == 1)
-        {
-            // We have found a hole!
-            matrix[startRow - 1][StartCol] = 0;
-            time++;
-        }
+        return;
     }
+    // for each element we move in all four directions
+    theGreatFlood(matrix, timeMatrix, startRow, (startCol - 1), size, time + 1);
+    theGreatFlood(matrix, timeMatrix, startRow, (startCol + 1), size, time + 1);
+    theGreatFlood(matrix, timeMatrix, (startRow - 1), startCol, size, time + 1);
+    theGreatFlood(matrix, timeMatrix, (startRow + 1), startCol, size, time + 1);
 }
 
-unsigned moveRight(int **matrix, unsigned startRow, unsigned StartCol, const unsigned size, unsigned &time)
-{
-    for (size_t i = 0; i < size; i++)
-    {
-        for (size_t j = 0; j < size; j++)
-        {
-        }
-    }
-}
-
-unsigned moveUp(int **matrix, unsigned startRow, unsigned StartCol, const unsigned size, unsigned &time)
-{
-    for (size_t i = 0; i < size; i++)
-    {
-        for (size_t j = 0; j < size; j++)
-        {
-        }
-    }
-}
-
-unsigned moveDown(int **matrix, unsigned startRow, unsigned StartCol, const unsigned size, unsigned &time)
-{
-    for (size_t i = 0; i < size; i++)
-    {
-        for (size_t j = 0; j < size; j++)
-        {
-        }
-    }
-}
-
-unsigned theGreatFlood(int **matrix, unsigned startRow, unsigned startCol, const unsigned size, unsigned &timeElapsed)
-{
-    // Recursion
-    // Water passes in all 4 directions   left, up, down, right
-    // start: matrix[startRow][startCol]
-}
 int main()
 {
     unsigned size;
@@ -97,7 +80,13 @@ int main()
         return 0;
     }
 
-    //
+    // Helper matrix, responsible for the time
+    int **timeMatrix = new int *[size];
+    initTimeMatrix(timeMatrix, size);
+
+    // Getting ready for the Great Flood
+    int time = 0;
+    theGreatFlood(matrix, timeMatrix, rowStart, colStart, size, time);
 
     return 0;
 }
