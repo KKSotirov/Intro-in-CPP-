@@ -57,6 +57,15 @@ void theGreatFlood(int **matrix, int **timeMatrix, int startRow, int startCol, c
     theGreatFlood(matrix, timeMatrix, (startRow + 1), startCol, size, time + 1);
 }
 
+void freeMatrix(int **matrix, const unsigned size)
+{
+    for (size_t i = 0; i < size; i++)
+    {
+        delete[] matrix[i];
+    }
+    delete[] matrix;
+}
+
 int main()
 {
     unsigned size;
