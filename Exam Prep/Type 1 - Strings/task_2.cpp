@@ -28,20 +28,8 @@ bool isNum(const char ch)
     return ch >= '0' && ch <= '9';
 }
 
-int pow(const int num, int degree)
-{
-    int result = 1;
-    while (degree > 0)
-    {
-        result = result * num;
-        degree--;
-    }
-    return result;
-}
-
 int charToInt(const char ch)
 {
-    // return static_cast<int>(ch);
     return ch - '0';
 }
 

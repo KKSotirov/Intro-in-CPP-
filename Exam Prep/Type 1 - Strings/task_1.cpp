@@ -1,5 +1,5 @@
 #include <iostream>
-// Напишете функция, която приема символен низ и връща нов низ, за който е заделено точно количество памет, съдържащ само онези символи от подадения низ, които се срещат само веднъж в него (запазвайки оригиналния им ред на поява).
+
 unsigned strlen(const char *str)
 {
     unsigned len = 0;
@@ -22,15 +22,6 @@ void strcpy(char *&dest, const char *src)
         dest[i] = src[i];
     }
     dest[strlen(src)] = '\0';
-}
-
-void resize(char *&str, unsigned &capacity)
-{
-    char *temp = new char[capacity * 2];
-    strcpy(temp, str);
-    capacity *= 2;
-    delete[] str;
-    str = temp;
 }
 
 int charToInt(const char ch)
@@ -93,4 +84,5 @@ int main()
     printStr(amenStr);
 
     delete[] str;
+    delete[] amenStr;
 }
