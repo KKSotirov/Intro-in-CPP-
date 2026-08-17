@@ -51,6 +51,7 @@ int getSquareRoots(const char *str)
     bool foundAny = false;
     unsigned currNumber;
     const char *ptr = str;
+
     while (*ptr)
     {
         if (isNum(*ptr))
@@ -65,7 +66,21 @@ int getSquareRoots(const char *str)
             if (isSquareRoot(currNumber))
                 count++;
         }
+        else
+            ptr++;
     }
 
     return count;
+}
+
+int main()
+{
+    const char *testStr = "18sksk16skad 4dd25sa 900";
+    char *str = nullptr;
+    strcpy(str, testStr);
+    std::cout << "Count of square roots:  " << getSquareRoots(str) << std::endl;
+
+    delete[] testStr;
+    delete[] str;
+    return 0;
 }
