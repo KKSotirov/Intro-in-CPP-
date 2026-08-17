@@ -30,12 +30,22 @@ void myStrCpy(char *&dest, const char *src)
         dest++;
         src++;
     }
-    *dest = ' ';
+}
+
+void strCpyMatrix(char *&dest, const char *src, const size_t len)
+{
+    for (size_t i = 0; i < len; i++)
+    {
+        dest[i] = src[i];
+    }
+    dest[len] = '\0';
 }
 
 void strcpy(char *&dest, const char *src)
 {
     int len = strlen(src);
+    delete[] dest;
+    dest = new char[len + 1];
     for (size_t i = 0; i < len; i++)
     {
         dest[i] = src[i];
@@ -74,7 +84,7 @@ char *getWord(const char *str)
     *helperContainer = '\0';
     helperContainer -= newLen;
 
-    char *word = new char[newLen + 1];
+    char *word = nullptr;
     strcpy(word, helperContainer);
 
     delete[] helperContainer;
@@ -93,15 +103,15 @@ bool isPalidrome(char *str, const size_t len)
     return true;
 }
 
-char **palindromsIntoMatrix(const char *str)
+char **palindromsIntoMatrix(const char *str, int &matrixRows)
 {
     int len = strlen(str);
     char *currWord = nullptr;
     size_t currLen = 0;
 
     char *helperContainer = new char[len + 1];
-    int helperLen = 0;
-    int newLen = 0;
+    char *ogHelper = helperContainer;
+    int wordCount = 0;
     // str ~~> str with only palindroms and _ inbetween ~~> matrix
     const char *ptr = str;
     while (*ptr)
@@ -117,26 +127,81 @@ char **palindromsIntoMatrix(const char *str)
             {
 
                 myStrCpy(helperContainer, currWord);
+                *helperContainer = ' ';
                 helperContainer++;
-                helperLen += currLen + 1;
-                newLen++; // a new palindrom has been copied
                 ptr += currLen;
+                wordCount++; // a new word has been copied
             }
             else
             {
                 ptr += currLen;
                 // Curr word is not a palindrome, we skip it
             }
+            delete[] currWord;
+            currWord = nullptr;
         }
     }
     *helperContainer = '\0';
-    helperContainer -= helperLen;
+    helperContainer = ogHelper;
+    // here we need to make the matrix and to store in it each word
+    // lets first get each word's lengths
+    char **palindromMatrix = new char *[wordCount];
+    matrixRows = wordCount;
+    int currMatrixRow = 0;
+
+    while (*ogHelper)
+    {
+        while (*ogHelper && !isLetter(*ogHelper))
+            ogHelper++;
+
+        currWord = getWord(ogHelper);
+        currLen = strlen(currWord);
+        palindromMatrix[currMatrixRow] = new char[currLen + 1];
+        strCpyMatrix(palindromMatrix[currMatrixRow], currWord, currLen);
+        currMatrixRow++;
+        ogHelper += currLen;
+
+        delete[] currWord;
+        currWord = nullptr;
+    }
+
+    delete[] helperContainer;
+
+    return palindromMatrix;
+}
+
+void freeMatrix(char **matrix, const int rows)
+{
+    for (size_t i = 0; i < rows; i++)
+    {
+        delete[] matrix[i];
+    }
+    delete[] matrix;
+}
+
+void printMatrix(char **matrix, const int rows)
+{
+    for (size_t i = 0; i < rows; i++)
+    {
+        while (*matrix[i])
+        {
+            std::cout << *matrix[i];
+            matrix[i]++;
+        }
+        std::cout << " ";
+    }
+    std::cout << std::endl;
 }
 
 int main()
 {
     const char *testStr = "avava bab joker tatat   joker          joker ana";
     char *str = nullptr;
+    strcpy(str, testStr);
+    int matrixRows = 0;
+    char **matrix = palindromsIntoMatrix(str, matrixRows);
+    printMatrix(matrix, matrixRows);
 
+    freeMatrix(matrix, matrixRows);
     return 0;
 }
