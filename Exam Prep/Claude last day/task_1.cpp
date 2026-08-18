@@ -87,7 +87,7 @@ char *returnEven(const char *str)
 
 int main()
 {
-    const char *testStr = "hello hi";
+    const char *testStr = "hi abcdef";
     char *str = nullptr;
     strcpy(str, testStr);
 
