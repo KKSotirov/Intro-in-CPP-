@@ -74,7 +74,9 @@ char *returnEven(const char *str)
         if (*str)
             str++;
     }
-    str = ptr;
+    if (newLen > 0 && helperContainer[newLen - 1] == ' ')
+        newLen--;
+    helperContainer[newLen] = '\0';
 
     char *newStr = new char[newLen + 1];
     myStrCpy(newStr, helperContainer, newLen);
@@ -85,7 +87,7 @@ char *returnEven(const char *str)
 
 int main()
 {
-    const char *testStr = "hello hi bye world ok";
+    const char *testStr = "hello hi";
     char *str = nullptr;
     strcpy(str, testStr);
 
